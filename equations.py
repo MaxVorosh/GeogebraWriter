@@ -10,19 +10,28 @@ class Var(enum.Enum):
 
 class Equation:
     def __init__(self):
-        self.restrictions = ""
+        self.restrictions = {Var.x:[None, None], Var.y:[None, None]}
 
-    def move(self, x, y):
-        pass
+    def move(self, dx, dy):
+        return self
 
     def __str__(self):
         return self.restrictions
 
-    def apply_restriction(self, start=None, end=None, var=Var.x):
-        if start is not None:
-            self.restrictions += f"+sqrt({var.name} - {start})-sqrt({var.name} - {start})"
-        if end is not None:
-            self.restrictions += f"+sqrt({end} - {var.name})-sqrt({end} - {var.name})"
+    def get_restrictions(self):
+        restrictions = ""
+        for var in self.restrictions.keys():
+            start = self.restrictions[var][0]
+            end = self.restrictions[var][1]
+            if start is not None:
+                restrictions += f"+sqrt({var.name} - {start})-sqrt({var.name} - {start})"
+            if end is not None:
+                restrictions += f"+sqrt({end} - {var.name})-sqrt({end} - {var.name})"
+        return restrictions
+
+    def apply_restrictions(self, start=None, end=None, var=Var.x):
+        self.restrictions[var] = [start, end]
+        return self
 
 
 class Line(Equation):
@@ -32,6 +41,23 @@ class Line(Equation):
         self.xCoefficient = x_coefficient
         self.yCoefficient = y_coefficient
         self.freeCoefficient = free_coefficient
+        if self.xCoefficient == 0 and self.yCoefficient == 0:
+            raise Exception('Not a line')
+
+    def __str__(self):
+        return f"{self.xCoefficient}x + {self.yCoefficient}y{self.get_restrictions()}= {-self.freeCoefficient}"
+
+    def move(self, dx, dy):
+        for i in range(2):
+            if self.restrictions[Var.x][i] is not None:
+                self.restrictions[Var.x][i] += dx
+            if self.restrictions[Var.y][i] is not None:
+                self.restrictions[Var.y][i] += dy
+        if self.yCoefficient != 0:
+            self.freeCoefficient -= self.yCoefficient * dy
+        if self.xCoefficient != 0:
+            self.freeCoefficient -= self.xCoefficient * dx
+        return self
 
 
 class Circle(Equation):
