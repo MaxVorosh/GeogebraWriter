@@ -1,0 +1,1 @@
+# Functions, that creates equations
