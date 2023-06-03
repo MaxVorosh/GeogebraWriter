@@ -1,5 +1,6 @@
 # Comparison between symbol and equation
 from equations import *
+import copy
 
 
 class Symbol:
@@ -17,6 +18,9 @@ class Symbol:
         for i in range(len(self.equations)):
             self.equations[i] = self.equations[i].move(dx, dy)
         return self
+
+    def copy(self):
+        return Symbol(self.symbol, copy.deepcopy(self.equations))
 
 
 LETTER_WIDTH = 1
@@ -138,7 +142,7 @@ dictionary = {'a': Symbol('a', [Line(0, 1, 0).apply_restrictions(-0.25, 0.25, Va
               'Э': Symbol('Э', [Circle(1, 0.25, 0, 0.5, 0.5, False).apply_restrictions(0, None, Var.x), Circle(1, 0.25, 0, 0.5, 0.5, False).apply_restrictions(None, 0, Var.x).apply_restrictions(1, None, Var.y), Circle(1, 0.25, 0, 0.5, 0.5, False).apply_restrictions(None, 0, Var.x).apply_restrictions(None, 0, Var.y), Line(0, 1, -0.5).apply_restrictions(-0.25, 0.5, Var.x)]),
               'Ю': Symbol('Ю', [Line(1, 0, 0.5).apply_restrictions(-0.5, 1.5, Var.y), Line(0, 1, -0.5).apply_restrictions(-0.5, 0, Var.x), Circle(1, 0.0625, 0.25, 0.5, 0.25, False)]),
               'Я': Symbol('Я', [Line(1, 0, -0.5).apply_restrictions(-0.5, 1.5, Var.y), Line(1, -1, 0).apply_restrictions(-0.5, 0.5, Var.x), Circle(0.25, 1, 0.5, 1, 0.5, False).apply_restrictions(None, 0.5, Var.x)]),
-              '.': Symbol('.', [Circle(1, 1, 0, 0, 0.125, True)]),
-              ',': Symbol(',', [Line(2, -1, 0).apply_restrictions(-0.25, 0, Var.y)]),
+              '.': Symbol('.', [Circle(1, 1, 0, -0.5, 0.125, True)]),
+              ',': Symbol(',', [Line(2, -1, 0).apply_restrictions(-0.25, 0, Var.y).move(0, -0.5)]),
               ' ': Symbol(' ', []),
-              '!': Symbol('!', [Circle(1, 1, 0, 0, 0.125, True), Line(1, 0, 0).apply_restrictions(0.25, 1.5, Var.y)])}
+              '!': Symbol('!', [Circle(1, 1, 0, -0.5, 0.125, True), Line(1, 0, 0).apply_restrictions(0.25, 1.5, Var.y)])}
